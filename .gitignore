@@ -364,3 +364,4 @@ FodyWeavers.xsd
 /WPF/Models/MainWindowModel.cs
 /todo.txt
 Tests
+.config

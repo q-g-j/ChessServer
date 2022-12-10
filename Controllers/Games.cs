@@ -74,7 +74,11 @@ namespace ChessServer.Controllers
                 gameInDb.LastMoveEndWhite = currentGame.LastMoveEndWhite;
                 gameInDb.LastMoveStartBlack = currentGame.LastMoveStartBlack;
                 gameInDb.LastMoveEndBlack = currentGame.LastMoveEndBlack;
+                gameInDb.PawnMovedTwoSquares = currentGame.PawnMovedTwoSquares;
+                gameInDb.PromotePawnType = currentGame.PromotePawnType;
+                gameInDb.IsCheckMate = currentGame.IsCheckMate;
                 gameInDb.MoveInfo = currentGame.MoveInfo;
+                gameInDb.HasPlayerQuit = currentGame.HasPlayerQuit;
 
                 await _playerDBContext.SaveChangesAsync();
 

@@ -1,4 +1,6 @@
-﻿namespace ChessServer.Models
+﻿using System.Text.Json.Serialization;
+
+namespace ChessServer.Models
 {
     public class Game
     {
@@ -9,9 +11,14 @@
         public string? LastMoveEndWhite { get; set; }
         public string? LastMoveStartBlack { get; set; }
         public string? LastMoveEndBlack { get; set; }
+        public bool PawnMovedTwoSquares { get; set; } = false;
+        public char PromotePawnType { get; set; }
+        public bool IsCheckMate { get; set; } = false;
         public string? MoveInfo { get; set; }
         public bool HasPlayerQuit { get; set; } = false;
+        [JsonIgnore]
         public int WhiteInactivityCounter { get; set; }
+        [JsonIgnore]
         public int BlackInactivityCounter { get; set; }
     }
 }
