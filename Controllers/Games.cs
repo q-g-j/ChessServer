@@ -70,10 +70,8 @@ namespace ChessServer.Controllers
             Game? gameInDb = await _playerDBContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
             if (gameInDb != null)
             {
-                gameInDb.LastMoveStartWhite = currentGame.LastMoveStartWhite;
-                gameInDb.LastMoveEndWhite = currentGame.LastMoveEndWhite;
-                gameInDb.LastMoveStartBlack = currentGame.LastMoveStartBlack;
-                gameInDb.LastMoveEndBlack = currentGame.LastMoveEndBlack;
+                gameInDb.LastMoveStart = currentGame.LastMoveStart;
+                gameInDb.LastMoveEnd = currentGame.LastMoveEnd;
                 gameInDb.PawnMovedTwoSquares = currentGame.PawnMovedTwoSquares;
                 gameInDb.PromotePawnType = currentGame.PromotePawnType;
                 gameInDb.IsCheckMate = currentGame.IsCheckMate;
