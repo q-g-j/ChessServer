@@ -84,6 +84,7 @@ namespace ChessServer.Services
         public void Dispose()
         {
             _timer?.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
