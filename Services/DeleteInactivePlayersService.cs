@@ -26,21 +26,21 @@ namespace ChessServer.Services
         {
             using (var scope = _scopeFactory.CreateScope())
             {
-                var playerContext = scope.ServiceProvider.GetRequiredService<ChessDBContext>();
+                var dbContext = scope.ServiceProvider.GetRequiredService<ChessDBContext>();
 
-                if (playerContext != null)
+                if (dbContext != null)
                 {
                     try
                     {
-                        foreach (var player in playerContext.Players)
+                        foreach (var player in dbContext.Players)
                         {
                             player.InactiveCounter += 1;
                             if (player.InactiveCounter == 5)
                             {
-                                playerContext.Players.Remove(player);
-                                playerContext.Invitations.RemoveRange(playerContext.Invitations.Where(a => a.PlayerId == player.Id));
+                                dbContext.Players.Remove(player);
+                                dbContext.Invitations.RemoveRange(dbContext.Invitations.Where(a => a.PlayerId == player.Id));
                             }
-                            await playerContext.SaveChangesAsync();
+                            await dbContext.SaveChangesAsync();
                         }
                     }
                     catch
@@ -49,7 +49,7 @@ namespace ChessServer.Services
                     }
                     try
                     {
-                        foreach (var game in playerContext.Games)
+                        foreach (var game in dbContext.Games)
                         {
                             game.WhiteInactivityCounter += 1;
                             game.BlackInactivityCounter += 1;
@@ -59,9 +59,9 @@ namespace ChessServer.Services
                             }
                             if (game.WhiteInactivityCounter >= 5 && game.BlackInactivityCounter >= 5)
                             {
-                                playerContext.Games.Remove(game);
+                                dbContext.Games.Remove(game);
                             }
-                            await playerContext.SaveChangesAsync();
+                            await dbContext.SaveChangesAsync();
                         }
                     }
                     catch

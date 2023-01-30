@@ -9,17 +9,17 @@ namespace ChessServer.Controllers
     [Route("api/[controller]")]
     public class Games : ControllerBase
     {
-        private readonly ChessDBContext _playerDBContext;
+        private readonly ChessDBContext _dbContext;
 
-        public Games(ChessDBContext playerDBContext)
+        public Games(ChessDBContext dbContext)
         {
-            _playerDBContext = playerDBContext;
+            _dbContext = dbContext;
         }
 
         [HttpGet("{invitingId}")]
         public async Task<ActionResult> GetGame(int invitingId)
         {
-            Game? game = await _playerDBContext.Games.Where(a => a.BlackId == invitingId).FirstOrDefaultAsync();
+            Game? game = await _dbContext.Games.Where(a => a.BlackId == invitingId).FirstOrDefaultAsync();
             if (game != null)
             {
                 return Ok(game);
@@ -31,7 +31,7 @@ namespace ChessServer.Controllers
         [HttpGet("current/{currentGameId}")]
         public async Task<ActionResult> GetCurrentGame(int currentGameId)
         {
-            Game? game = await _playerDBContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
+            Game? game = await _dbContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
             if (game != null)
             {
                 return Ok(game);
@@ -43,19 +43,19 @@ namespace ChessServer.Controllers
         [HttpPost]
         public async Task<ActionResult> PostNewGame(Game newGame)
         {
-            Player? whitePlayer = await _playerDBContext.Players.Where(a => a.Id == newGame.WhiteId).FirstOrDefaultAsync();
+            Player? whitePlayer = await _dbContext.Players.Where(a => a.Id == newGame.WhiteId).FirstOrDefaultAsync();
             if (whitePlayer != null)
             {
-                Player? blackPlayer = await _playerDBContext.Players.Where(a => a.Id == newGame.BlackId).FirstOrDefaultAsync();
+                Player? blackPlayer = await _dbContext.Players.Where(a => a.Id == newGame.BlackId).FirstOrDefaultAsync();
                 if (blackPlayer != null)
                 {
-                    Game? gameInDbCheck = await _playerDBContext.Games.Where(a => a.WhiteId == newGame.WhiteId).Where(a => a.BlackId == newGame.BlackId).FirstOrDefaultAsync();
+                    Game? gameInDbCheck = await _dbContext.Games.Where(a => a.WhiteId == newGame.WhiteId).Where(a => a.BlackId == newGame.BlackId).FirstOrDefaultAsync();
 
                     if (gameInDbCheck == null)
                     {
-                        await _playerDBContext.Games.AddAsync(newGame);
-                        await _playerDBContext.SaveChangesAsync();
-                        Game? newGameInDb = await _playerDBContext.Games.Where(a => a.WhiteId == newGame.WhiteId).Where(a => a.BlackId == newGame.BlackId).FirstOrDefaultAsync();
+                        await _dbContext.Games.AddAsync(newGame);
+                        await _dbContext.SaveChangesAsync();
+                        Game? newGameInDb = await _dbContext.Games.Where(a => a.WhiteId == newGame.WhiteId).Where(a => a.BlackId == newGame.BlackId).FirstOrDefaultAsync();
                         return Ok(newGameInDb);
                     }
                 }
@@ -67,7 +67,7 @@ namespace ChessServer.Controllers
         [HttpPut("current/{currentGameId}")]
         public async Task<ActionResult> PutCurrentGame(int currentGameId, Game currentGame)
         {
-            Game? gameInDb = await _playerDBContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
+            Game? gameInDb = await _dbContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
             if (gameInDb != null)
             {
                 gameInDb.LastMoveStart = currentGame.LastMoveStart;
@@ -78,7 +78,7 @@ namespace ChessServer.Controllers
                 gameInDb.MoveInfo = currentGame.MoveInfo;
                 gameInDb.HasPlayerQuit = currentGame.HasPlayerQuit;
 
-                await _playerDBContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
                 return Ok();
             }
@@ -90,12 +90,12 @@ namespace ChessServer.Controllers
         public async Task<ActionResult> PutResetWhiteInactivityCounter(int currentGameId)
         {
             ChessDebug.WriteLine("whitecounter" + ", " + currentGameId.ToString());
-            Game? gameInDb = await _playerDBContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
+            Game? gameInDb = await _dbContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
             if (gameInDb != null)
             {
                 gameInDb.WhiteInactivityCounter = 0;
 
-                await _playerDBContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
                 return Ok();
             }
@@ -107,12 +107,12 @@ namespace ChessServer.Controllers
         public async Task<ActionResult> PutResetBlackInactivityCounter(int currentGameId)
         {
             ChessDebug.WriteLine("blackcounter" + ", " + currentGameId.ToString());
-            Game? gameInDb = await _playerDBContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
+            Game? gameInDb = await _dbContext.Games.Where(a => a.Id == currentGameId).FirstOrDefaultAsync();
             if (gameInDb != null)
             {
                 gameInDb.BlackInactivityCounter = 0;
 
-                await _playerDBContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync();
 
                 return Ok();
             }
